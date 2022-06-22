@@ -61,6 +61,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () async {
       var box = await Hive.openBox('profile');
+
+      var passwords = await Hive.openBox('password');
+      var pk = await passwords.get('length');
+
+      if(pk == Null) {
+        await passwords.put('password', List);
+        await passwords.put('length', 0);
+      }
+
       // await box.close();
       print(box); print(box.get('is_active'));
       box.get('is_active') == null ?

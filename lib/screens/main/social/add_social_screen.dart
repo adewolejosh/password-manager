@@ -1,7 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:password_manager/routes/auto_route.gr.dart';
 import 'package:password_manager/screens/components/customButton.dart';
 import 'package:password_manager/screens/components/custom_text_field.dart';
 import 'package:password_manager/screens/utils/app_colors.dart';
+import 'package:password_manager/services/social_services.dart';
 
 class AddSocialLink extends StatefulWidget {
   const AddSocialLink({Key? key}) : super(key: key);
@@ -14,7 +18,7 @@ class _AddSocialLinkState extends State<AddSocialLink> {
   final smController = TextEditingController();
   final pController = TextEditingController();
   final cpController = TextEditingController();
-
+  late List new_pass;
 
   showDialog(BuildContext context){
     return AlertDialog(
@@ -41,7 +45,13 @@ class _AddSocialLinkState extends State<AddSocialLink> {
               const SizedBox(
                 height: 20.0,
               ),
-              CustomButton(title: 'ADD', buttonColor: AppColors().altSuccess,)
+              CustomButton(
+                onPressed: (){
+                	saveLink();
+                },
+                title: 'ADD',
+                buttonColor: AppColors().altSuccess,
+              )
             ],
           ),
         ),
@@ -49,8 +59,33 @@ class _AddSocialLinkState extends State<AddSocialLink> {
     );
   }
 
+
+  saveLink() async {
+    var passwords = await Hive.openBox('password');
+
+    var pk = await passwords.get('length');
+
+    if (pk == null){
+      await passwords.put('length', 0);
+    }
+
+    if(pk == 0) {
+      await passwords.put('password', []);
+    }
+
+    var saved = await SocialService().createSocial(
+        smController.text.toString(),
+        pController.text.toString()
+    );
+
+    if(saved) {
+      passwords.put('length', pk+1);
+      return AutoRouter.of(context).push(const HomeScreen());
+    }
+  }
+
   @override
-  void dispose() {
+  void dispose() async{
     smController.dispose();pController.dispose();cpController.dispose();
   }
 

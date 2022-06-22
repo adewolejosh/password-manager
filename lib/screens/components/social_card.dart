@@ -24,6 +24,9 @@ class _SocialCardState extends State<SocialCard> {
       onTap: () {
 
       },
+      onLongPress: () {
+
+      },
       child: SizedBox(
         width: double.infinity,
         height: 70.0,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:password_manager/screens/utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
-  final dynamic onPressed;
+  final onPressed;
   final String title;
   final dynamic buttonColor;
 
